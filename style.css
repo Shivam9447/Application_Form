@@ -1,0 +1,58 @@
+form{
+    border: 2px solid black;
+    width: 500px;
+    padding: 10px;
+}
+#form{
+    margin-left: 350px;
+    margin-top: 25px;
+}
+input {
+    margin: 5px;
+    padding: 2px;
+}
+button{
+    margin-top: 10px;
+}
+::placeholder
+{
+    color: red;
+}
+
+.fa-solid{
+    margin-inline-start: -40px;
+}
+#password{
+    padding: 4px;
+}
+
+.error{
+    color:red;
+}
+#timer{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top:10px;
+}
+#contactError{
+    color:red;
+}
+
+#clock{
+    font-size: 2em;
+}
+#captchaPlace{
+    width: 100px;
+    height: 40px;
+    background-color: red;
+    color: black;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    font-size:larger;
+}
+
+#icon2{
+    margin-inline-start:120px;
+}

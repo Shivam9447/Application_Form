@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+        integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script> -->
+</head>
+
+<body>
+    <script src="script.js"></script>
+
+    <div id="timer">Timer: <span id="minutes">00</span>:<span id="seconds">00</span></div>
+    <div id="clock"></div>
+    <form id="form" onsubmit="return validateForm()">
+        <h1 style="display: flex; justify-content: center;">Application Form</h1>
+        Name <input type="text" name="name" id="name" /><br>
+        <span id="nameError"></span>
+        Email <input type="email" name="email" id="email" />
+        <span id="emailError" class="error"></span><br>
+        <div class="pass">
+            Password <input type="password" name="password" id="password" />
+            <i class="toggle-password fas fa-eye-slash" id="togglePassword"></i>
+        </div>
+        <span id="passwordError" class="error"></span><br>
+        Number <input type="number" name="number" id="number" />
+        <span id="numberError" class="error"></span><br>
+        Contact <input type="text" name="contact" id="contact" /><br>
+        <span id="contactError"></span><br>
+        Image<input type="file" id="file" name="file" accept="image/*" /><br>
+        <span id="fileError"></span><br>
+        Date<input type="date" id="date" name="date" /><br>
+        Time<input type="time" id="time" name="time" /><br>
+        Address<textarea type="text" id="area" name="message" rows="4" cols="50"></textarea><br>
+        <B>Gender</B><input type="radio" name="gender" id="maleRadio" value="male"> Male
+        <input type="radio" name="gender" id="femaleRadio" value="female"> Female
+        <br>
+        <b>Hobbies</b><label><input type="checkbox" name="hobbies" value="reading"> Reading</label>
+        <label><input type="checkbox" name="hobbies" value="cooking"> Cooking</label>
+        <label><input type="checkbox" name="hobbies" value="painting"> Painting</label>
+        <label><input type="checkbox" name="hobbies" value="gardening"> Gardening</label>
+        <label><input type="checkbox" name="hobbies" value="traveling"> Traveling</label><br>
+        <label for="captcha">Enter the CAPTCHA:</label>
+        <input type="text" id="captchaInput" name="captcha"><br><br>
+        <div id="captchaPlace"></div>
+        <div id="refresh"><i id="icon2" onclick="initCaptcha()" class="fa-solid fa-arrows-rotate"></i></div>
+        <div id="captchaError"></div>
+        <button type="submit" id="submitBtn" disabled>Submit</button>
+
+    </form>
+    <script>
+        submitBtn.disabled = true;
+
+        function checkForm() {
+            var name = document.getElementById('name').value;
+            var email = document.getElementById('email').value;
+            var password = document.getElementById('password').value;
+            var number = document.getElementById('number').value;
+            var file = document.getElementById('file').value;
+            var date = document.getElementById('date').value;
+            var time = document.getElementById('time').value;
+            var maleRadio = document.getElementById('maleRadio');
+            var femaleRadio = document.getElementById('femaleRadio');
+            var area = document.getElementById('area').value;
+            var submitBtn = document.getElementById('submitBtn');
+            var captchaInput = document.getElementById('captchaInput').value;
+            var checkboxes = document.querySelectorAll('input[name="hobbies"]:checked');
+
+
+            if (name.trim() !== "" && email.trim() !== "" && password.trim() !== "" && validateCheckboxes() && file.trim() !== "" && (maleRadio.checked || femaleRadio.checked) && number.trim() !== "" && date.trim() !== "" && time.trim() !== "" && captchaInput.trim() !== "" && area.trim() !== "") {
+                submitBtn.disabled = false;
+            }
+            else {
+                submitBtn.disabled = true;
+            }
+        }
+
+        // add checkbox concept for minimum 2 we have to select...
+
+        function validateCheckboxes() {
+            var checkboxes = document.querySelectorAll('input[name="hobbies"]:checked');
+            return checkboxes.length >= 2;
+        }
+
+        document.getElementById('form').addEventListener('input', checkForm);
+        var checkboxes = document.querySelectorAll('input[name="hobbies"]');
+        checkboxes.forEach(function (checkbox) {
+            checkbox.addEventListener('change', validateForm);
+        });
+
+        document.getElementById('name').addEventListener('input', checkForm);
+        document.getElementById('email').addEventListener('input', checkForm);
+        document.getElementById('password').addEventListener('input', checkForm);
+        document.getElementById('number').addEventListener('input', checkForm);
+        document.getElementById('date').addEventListener('input', checkForm);
+        document.getElementById('time').addEventListener('input', checkForm);
+        document.getElementById('area').addEventListener('textarea', checkForm);
+        document.getElementById('file').addEventListener('input', checkForm);
+        document.getElementById('captchaInput').addEventListener('input', checkForm);
+        document.getElementById('maleRadio').addEventListener('change', checkForm);
+        document.getElementById('femaleRadio').addEventListener('change', checkForm);
+
+
+        // for field placeholder... error show..
+
+        document.addEventListener('DOMContentLoaded', function () {
+            var inputs = document.querySelectorAll('input[type="text"],input[type="email"],input[type="password"],input[type="number"],input[type="file"],input[type="date"],input[type="time"],input[type="radio"]');
+
+            inputs.forEach(function (input) {
+                input.addEventListener('input', function () {
+                    validateInput(input);
+                });
+                input.addEventListener('blur', function () {
+                    validateInput(input)
+                });
+            });
+
+            function validateInput(input) {
+                if (input.value.trim() === "") {
+                    input.placeholder = 'This filed is required';
+                    input.style.color = 'red';
+                }
+                else {
+                    input.placeholder = input.getAttribute('placeholder');
+                    input.style.color = '';
+                }
+            }
+        });
+
+        // logic eye icon...
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const passwordInput = document.getElementById('password');
+            const togglePassword = document.getElementById('togglePassword');
+
+            togglePassword.addEventListener('click', function () {
+                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInput.setAttribute('type', type);
+                this.classList.toggle('fa-eye-slash');
+                this.classList.toggle('fa-eye');
+            });
+        });
+        // logic 2...for regular expression..
+
+        function validateForm() {
+            var email = document.getElementById('email').value.trim();
+            var password = document.getElementById('password').value.trim();
+            var number = document.getElementById('number').value.trim();
+
+            var emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            var passwordPattern = /^(?=.*\d)(?=.*[a-z])(?=.*[!@#$%^&*()<>?/|])(?=.*[A-Z]).{6,20}$/;
+            var numberPattern = /^[0-9]{10}$/;
+
+            var isValid = true;
+
+            document.getElementById('emailError').innerHTML = '';
+            document.getElementById('passwordError').innerHTML = '';
+            document.getElementById('numberError').innerHTML = '';
+
+            if (!emailPattern.test(email)) {
+                document.getElementById('emailError').innerHTML = "Invalid email address";
+                isValid = false;
+            }
+
+            if (!passwordPattern.test(password)) {
+                document.getElementById('passwordError').innerHTML = "Password must be at least 6 character contain one upper case one lower case and one special symbol";
+                isValid = false;
+            }
+            if (!numberPattern.test(number)) {
+                document.getElementById('numberError').innerHTML = "Number must only contain 10 digits";
+                isValid = false;
+            }
+            return isValid;
+        }
+        //logic 2 password error show simultaneously..
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const passwordInput = document.getElementById('password');
+            const passwordErrors = document.getElementById('passwordError');
+
+            // Regular expressions for password criteria
+            const uppercaseRegex = /[A-Z]/;
+            const lowercaseRegex = /[a-z]/;
+            const digitRegex = /\d/;
+            const minLengthRegex = /^.{8,}$/;
+            const specialCharRegex = /[!@#$%^&*(),.?":{}|<>]/; // Add more characters as needed
+
+            // Function to check if password meets criteria
+            function validatePassword(password) {
+                let errors = [];
+
+                if (!uppercaseRegex.test(password)) {
+                    errors.push('Password must contain at least one uppercase letter.');
+                }
+                if (!lowercaseRegex.test(password)) {
+                    errors.push('Password must contain at least one lowercase letter.');
+                }
+                if (!digitRegex.test(password)) {
+                    errors.push('Password must contain at least one digit.');
+                }
+                if (!specialCharRegex.test(password)) {
+                    errors.push('Password must contain at least one special character.');
+                }
+                if (!minLengthRegex.test(password)) {
+                    errors.push('Password must be atleast 8 character long!');
+                }
+
+                return errors;
+            }
+
+            // Function to update error messages
+            function updateErrorMessages(errors) {
+                passwordErrors.innerHTML = ''; // Clear previous error messages
+
+                if (errors.length > 0) {
+                    errors.forEach(error => {
+                        const errorElement = document.createElement('div');
+                        errorElement.textContent = error;
+                        passwordErrors.appendChild(errorElement);
+                    });
+                }
+            }
+
+            // Event listener for input change
+            passwordInput.addEventListener('input', function () {
+                const password = passwordInput.value;
+                const errors = validatePassword(password);
+                updateErrorMessages(errors);
+            });
+
+            // Event listener for form submission (optional)
+            const form = document.getElementById('form');
+            form.addEventListener('submit', function () {
+                // event.preventDefault(); // Prevent form submission
+
+                const password = passwordInput.value;
+                const errors = validatePassword(password);
+                updateErrorMessages(errors);
+
+                if (errors.length === 0) {
+                    // Proceed with form submission or further processing
+                    console.log('Password is valid:', password);
+                }
+            });
+        });
+
+        // Timer set on top of the form to submit until when user not fill form...
+
+        let startTime;
+        let timerInterval;
+        const totalTime = 1 * 60;
+
+        // Start timer when user interacts with form
+        document.querySelectorAll('#form input').forEach(input => {
+            input.addEventListener('input', startTimer);
+        });
+
+        function startTimer() {
+            if (!startTime) {
+                startTime = new Date().getTime();
+                timerInterval = setInterval(updateTimer, 1000); // Update timer every second
+            }
+        }
+
+        function updateTimer() {
+            const currentTime = new Date().getTime();
+            const elapsedTime = Math.floor((currentTime - startTime) / 1000); // Elapsed time in seconds
+
+            const remainingTime = totalTime - elapsedTime;
+            if (remainingTime <= 0) {
+                clearInterval(timerInterval);
+                window.location.href = 'https://www.google.com/';
+                return;
+            }
+            // Calculate minutes and seconds
+            const minutes = Math.floor(elapsedTime / 60);
+            const seconds = elapsedTime % 60;
+
+            // Update timer display
+            document.getElementById('minutes').textContent = padTime(minutes);
+            document.getElementById('seconds').textContent = padTime(seconds);
+        }
+        function padTime(time) {
+            return time < 10 ? `0${time}` : time;
+        }
+
+        // Form submission handling
+        document.getElementById('form').addEventListener('submit', function () {
+            // event.preventDefault(); // Prevent default form submission
+
+            const password = document.getElementById('password').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+
+            const errors = [];
+
+            if (!isAlphaNumeric(password)) {
+                errors.push("Password must be alphanumeric");
+            }
+            if (phone.length !== 10) {
+                errors.push("Phone number must be 10 digits long");
+            }
+
+            // Display errors
+            const errorMessages = document.getElementById('errorMessages');
+            errorMessages.innerHTML = ''; // Clear previous errors
+
+            if (errors.length > 0) {
+                errors.forEach(function (error) {
+                    const errorElement = document.createElement('div');
+                    errorElement.textContent = error;
+                    errorMessages.appendChild(errorElement);
+                });
+            } else {
+                // Submit the form or perform further actions
+                alert("Form submitted successfully!");
+                clearInterval(timerInterval); // Stop the timer
+                startTime = null; // Reset timer start time
+                document.getElementById('minutes').textContent = '00'; // Reset minutes display
+                document.getElementById('seconds').textContent = '00'; // Reset seconds display
+                // Optionally, you can reset the form
+                // document.getElementById('myForm').reset();
+            }
+        });
+
+        // Helper function to check if a string is alphanumeric
+        function isAlphaNumeric(str) {
+            const alphaNumericRegex = /^[0-9a-zA-Z]+$/;
+            return alphaNumericRegex.test(str);
+        }
+
+        // input type text but only enter contact number...
+
+        document.getElementById('contact').addEventListener('input', function () {
+            var input = this.value;
+            var digitInput = input.replace(/\D/g, '');
+            if (input !== digitInput) {
+                document.getElementById('contactError').textContent = "Only digits are allowed";
+            }
+            else {
+                document.getElementById('contactError').textContent = "";
+            }
+            this.value = digitInput;
+        });
+
+        document.getElementById('contact').addEventListener('keypress', function (event) {
+            var keyCode = event.keyCode || event.which;
+            var keyValue = String.fromCharCode(keyCode);
+            if (!/\d/.test(keyValue)) {
+                event.preventDefault();
+
+                document.getElementById('contactError').textContent = "Only digits are allowed.";
+            }
+        });
+
+        // digit clock show on top-left of the form..
+
+        function displayTime() {
+            let d = new Date();
+            let hours = d.getHours();
+            let minutes = d.getMinutes();
+            let seconds = d.getSeconds();
+
+            minutes = minutes < 10 ? '0' + minutes : minutes;
+            seconds = seconds < 10 ? '0' + seconds : seconds;
+
+            let timeString = hours + ':' + minutes + ':' + seconds;
+
+            document.getElementById('clock').innerHTML = timeString;
+        }
+        setInterval(displayTime, 1000);
+
+        // Only image extension file attach in input type file...
+
+        function generateCaptcha(length) {
+
+            let result = '';
+
+            const characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+
+            const charactersLength = characters.length;
+
+            for (let i = 0; i < length; i++) {
+
+                result += characters.charAt(Math.floor(Math.random() * charactersLength));
+
+            }
+            return result;
+        }
+
+        function initCaptcha() {
+
+            const captchaText = generateCaptcha(6);
+
+            // Display the CAPTCHA on the form
+
+            const captchaInput = document.getElementById('captchaInput');
+
+            document.getElementById('captchaPlace').innerHTML = captchaText;
+            document.getElementById('captchaInput').addEventListener('input', function () {
+                let userInput = this.value.trim();
+
+                if (userInput === captchaText) {
+                    document.getElementById('captchaError').textContent = 'Captcha valid';
+                }
+                else {
+                    document.getElementById('captchaError').textContent = 'Captcha Invalid';
+                }
+            });
+
+        }
+        document.addEventListener('DOMContentLoaded', initCaptcha);
+
+    </script>
+
+</body>
+
+</html>
